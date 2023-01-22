@@ -1,0 +1,26 @@
+<!--Template to edit a site-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Site</title>
+</head>
+<body>
+    <h1>Edit Site</h1>
+    <!--Overriding the method POST to update my database using PUT-->
+    <form action="/sites/<%=site._id%>?_method=PUT" method="POST">
+        <div>
+            <label for=""name">Name</label>
+            <input type="text" id="name" name="site[name]" value="<%=site.name%>"> <!--Organizing the form infomation under a "site" object so that I can use "req.body" easily in functions, variables and so on-->
+        </div>
+        <div>
+            <label for=""location">Location</label>
+            <input type="text" id=location" name="site[location]" value="<%=site.location%>">>
+        </div>    
+        <button>Update Site</button>   
+    </form>
+    <a href="/sites/<%= site._id%>">Back to the Site</a>
+</body>
+</html>
