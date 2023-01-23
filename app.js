@@ -1,6 +1,7 @@
 //Elements required to run this App
 const express = require('express');
 const path = require('path');
+const ejsMate = require('ejs-mate');
 const mongoose = require('mongoose');
 const Site = require('./models/site');
 const methodOverride = require('method-override');
@@ -19,7 +20,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/city-evolve')
 
 const app = express();
 
-// Setting up "ejs" as the view engine
+// Setting up "ejs" as the view engine and ejsMate as the template engine
+app.engine('ejs', ejsMate);
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname, '/views'));
 

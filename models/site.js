@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const SiteSchema = new Schema ({
     name: String,
-    value: String,
+    image: String,
+    value: Number,
     description: String,
     location: String
 });

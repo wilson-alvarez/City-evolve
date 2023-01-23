@@ -1,24 +1,37 @@
 <!--Template to add a new site-->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Site</title>
-</head>
-<body>
-    <form action="/sites" method="POST">
-        <div>
-            <label for=""name">Name</label>
-            <input type="text" id="name" name="site[name]">
+    <% layout('layouts/boilerplate')%>
+    <div class="row">
+        <h1 class="text-center">New Site</h1>
+        <div class="col-6 offset-3">
+            <form action="/sites" method="POST">
+                <div class="mb-3">        
+                    <label class="form-label" for="name">Name</label> 
+                    <input class="form-control" type="text" id="name" name="site[name]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control" type="text" id="location" name="site[location]">
+                </div>  
+                <div class="mb-3">
+                    <label class="form-label" for="image">Image Url</label>
+                    <input class="form-control" type="text" id="image" name="site[image]">
+                </div>  
+                <div class="mb-3">
+                    <label class="form-label" for="value">Site Value</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="value-label">$</span>
+                        <input type="text" class="form-control" id="value" placeholder="0.00" aria-label="value" aria-describedby="value-label" name="site[value]">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" type="text" id="image" name="site[description]"></textarea>
+                </div> 
+                <div class="mb-3">
+                    <button class="btn btn-success">Add Site</button>
+                </div>
+            </form>
+            <a href="/sites">All Sites</a>
         </div>
-        <div>
-            <label for=""location">Location</label>
-            <input type="text" id=location" name="site[location]">
-        </div>    
-        <button>Add Site</button>   
-    </form>
-    <a href="/sites">All Sites</a>
-</body>
-</html>
+    </div>
+
