@@ -18,7 +18,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/city-evolve')
 const seedBD = async() => {
     await Site.deleteMany({}); 
     for (let i = 0; i < 30; i++) { 
-    const site = new Site({ name: `${cities[i].name}`, value: `${cities[i].value}`, description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit dolorum ullam facere, harum itaque adipisci nostrum hic accusantium, quidem porro id tempora expedita excepturi commodi, ex vitae explicabo fuga officiis!', location: `${cities[i].location}`, image: 'https://source.unsplash.com/collection/2506006/500x500' });  
+    const site = new Site({ name: `${cities[i].name}`, value: `${cities[i].value}`, description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit dolorum ullam facere, harum itaque adipisci nostrum hic accusantium, quidem porro id tempora expedita excepturi commodi, ex vitae explicabo fuga officiis!', location: `${cities[i].location}`, image: 'https://source.unsplash.com/collection/2506006/500x500'});  
     await site.save();  
     }  
 };

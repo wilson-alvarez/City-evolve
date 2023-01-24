@@ -3,29 +3,35 @@
     <div class="row">
         <h1 class="text-center">New Site</h1>
         <div class="col-6 offset-3">
-            <form action="/sites" method="POST">
+            <!--"novalidate" is an attibute to stop the browser from validating the forms. I am using the "validated-form" Bootstrap class in the form and the attribute "required" in all the inputs instead-->
+            <form action="/sites" method="POST" novalidate class="validated-form">
                 <div class="mb-3">        
                     <label class="form-label" for="name">Name</label> 
-                    <input class="form-control" type="text" id="name" name="site[name]">
+                    <input class="form-control" type="text" id="name" name="site[name]" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="site[location]">
+                    <input class="form-control" type="text" id="location" name="site[location]" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>  
                 <div class="mb-3">
                     <label class="form-label" for="image">Image Url</label>
-                    <input class="form-control" type="text" id="image" name="site[image]">
+                    <input class="form-control" type="text" id="image" name="site[image]" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>  
                 <div class="mb-3">
                     <label class="form-label" for="value">Site Value</label>
                     <div class="input-group">
                         <span class="input-group-text" id="value-label">$</span>
-                        <input type="text" class="form-control" id="value" placeholder="0.00" aria-label="value" aria-describedby="value-label" name="site[value]">
+                        <input type="text" class="form-control" id="value" placeholder="0.00" aria-label="value" aria-describedby="value-label" name="site[value]" required>
+                        <div class="valid-feedback">Looks good!</div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" id="image" name="site[description]"></textarea>
+                    <textarea class="form-control" type="text" id="image" name="site[description]" required></textarea>
+                    <div class="valid-feedback">Looks good!</div>
                 </div> 
                 <div class="mb-3">
                     <button class="btn btn-success">Add Site</button>
@@ -34,4 +40,3 @@
             <a href="/sites">All Sites</a>
         </div>
     </div>
-

@@ -4,29 +4,34 @@
         <h1 class="text-center">Edit Site</h1>
         <div class="col-6 offset-3">
                 <!--Overriding the method POST to update my database using PUT-->
-            <form action="/sites/<%=site._id%>?_method=PUT" method="POST">
+            <form action="/sites/<%=site._id%>?_method=PUT" method="POST" novalidate class="validated-form">
                 <div class="mb-3">        
                     <label class="form-label" for="name">Name</label> 
-                    <input class="form-control" type="text" id="name" name="site[name]" value="<%=site.name%>">>
+                    <input class="form-control" type="text" id="name" name="site[name]" value="<%=site.name%>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="site[location]" value="<%=site.location%>">>
+                    <input class="form-control" type="text" id="location" name="site[location]" value="<%=site.location%>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>  
                 <div class="mb-3">
                     <label class="form-label" for="image">Image Url</label>
-                    <input class="form-control" type="text" id="image" name="site[image]" value="<%=site.image%>">>
+                    <input class="form-control" type="text" id="image" name="site[image]" value="<%=site.image%>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>  
                 <div class="mb-3">
                     <label class="form-label" for="value">Site Value</label>
                     <div class="input-group">
                         <span class="input-group-text" id="value-label">$</span>
-                        <input type="text" class="form-control" id="value" aria-label="value" aria-describedby="value-label" name="site[value]" value="<%=site.value%>">
+                        <input type="text" class="form-control" id="value" aria-label="value" aria-describedby="value-label" name="site[value]" value="<%=site.value%>" required>
+                        <div class="valid-feedback">Looks good!</div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" id="image" name="site[description]"><%=site.description%></textarea>
+                    <textarea class="form-control" type="text" id="image" name="site[description]" required><%=site.description%></textarea>
+                    <div class="valid-feedback">Looks good!</div>
                 </div> 
                 <div class="mb-3">
                     <button class="btn btn-info">Update Site</button>

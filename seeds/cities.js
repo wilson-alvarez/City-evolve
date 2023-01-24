@@ -4,7 +4,7 @@ module.exports = [
         name: 'CN Tower',
         value: 1700000000,
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis, odio iste deserunt tenetur aspernatur impedit dolorum assumenda obcaecati, ad exercitationem praesentium quasi labore non maiores esse eius dolorem adipisci quo!',
-        location: 'Toronto, Ontario',cn 
+        location: 'Toronto, Ontario',
     },
     {
         name: 'Parliament Hill',
