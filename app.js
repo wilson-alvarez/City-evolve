@@ -3,13 +3,13 @@ const express = require('express');
 const path = require('path');
 const ejsMate = require('ejs-mate');
 // I have to destructure every variable of validateSquemas in order to use it
-const { validateSite } = require('./validateSchemas');
+const { validateSite, validateReview } = require('./validateSchemas');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const mongoose = require('mongoose');
-const Site = require('./models/site');
 const methodOverride = require('method-override');
-
+const Site = require('./models/site');
+const Review = require('./models/review');
 
 // Testing the connection between Mogoose and MongoDB
 mongoose.connect('mongodb://127.0.0.1:27017/city-evolve')
@@ -62,7 +62,7 @@ app.post('/sites', validateSite, catchAsync(async (req, res, next) => {
 
 // Route to show the information related to a single site
 app.get('/sites/:id', catchAsync(async (req, res) => {
-    const site = await Site.findById(req.params.id);
+    const site = await Site.findById(req.params.id).populate('reviews');
     res.render('sites/show', { site });
 }));
 
@@ -84,6 +84,25 @@ app.delete('/sites/:id', catchAsync(async (req, res) => {
     const {id} = req.params;
     await Site.findByIdAndDelete(id);
     res.redirect('/sites');
+}));
+
+// Route to create a "review", save it in the DB and associate it with a "site".
+app.post('/sites/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const site = await Site.findById(req.params.id);
+    const review = new Review(req.body.review);
+    site.reviews.push(review);
+    await review.save();
+    await site.save();
+    res.redirect(`/sites/${site._id}`);
+}));
+
+// Route to delete reviews
+app.delete('/sites/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    // Using the pull operator to remove an specific element from the reviews array.
+    await Site.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+    await Review.findById(req.params.reviewId);
+    res.redirect(`/sites/${id}`);
 }));
 
 // Error handler for all the routes
