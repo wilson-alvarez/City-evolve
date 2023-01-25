@@ -2,14 +2,19 @@
 const express = require('express');
 const path = require('path');
 const ejsMate = require('ejs-mate');
-// I have to destructure every variable of validateSquemas in order to use it
-const { validateSite, validateReview } = require('./validateSchemas');
-const catchAsync = require('./utils/catchAsync');
-const ExpressError = require('./utils/ExpressError');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const flash = require('connect-flash');
+const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
-const Site = require('./models/site');
-const Review = require('./models/review');
+
+
+// Requiring route files
+const sites = require('./routes/sites');
+const reviews = require('./routes/reviews');
+
+//To fix the deprecation warning shown in the console when running the app
+mongoose.set('strictQuery', false);
 
 // Testing the connection between Mogoose and MongoDB
 mongoose.connect('mongodb://127.0.0.1:27017/city-evolve')
@@ -33,77 +38,43 @@ app.set('views', path.join(__dirname, '/views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+//Middleware to serve the public files
+app.use(express.static(path.join(__dirname,'public')));
 
+
+
+// Setting the session
+const sessionConfig = {
+    secret: 'thisshouldbeabettersecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 7*24*60*60*1000,
+        maxAge: + 7*24*60*60*1000,
+    }
+}
+app.use(session(sessionConfig));
+
+
+//Setting up flash
+app.use(flash());
+// Middleware to access "success" or "error" messages stored in flash locally.
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
+
+// Adding the routes defined in "sites.js" and "reviews.js", and attaching them to the endpoints "/sites" and "sites/:id/reviewss" respectively.
+app.use('/sites', sites);
+app.use('/sites/:id/reviews', reviews);
 
 // Landing page
 app.get('/', (req, res) => {
         res.render('home')
 });
 
-
-// Route to show the template with all the sites
-app.get('/sites', catchAsync(async (req, res) => {
-    const sites = await Site.find({});
-    res.render('sites/index', { sites });
-}));
-
-// Route to show the template to edit a site
-app.get('/sites/new', (req, res) => {
-    res.render('sites/new');
-});
-
-// Route to write in the database the information received from the new site form (creating a new site)
-app.post('/sites', validateSite, catchAsync(async (req, res, next) => {
-    const site = new Site(req.body.site);
-    await site.save();
-    res.redirect(`/sites/${site._id}`);
-    }));
-
-
-// Route to show the information related to a single site
-app.get('/sites/:id', catchAsync(async (req, res) => {
-    const site = await Site.findById(req.params.id).populate('reviews');
-    res.render('sites/show', { site });
-}));
-
-// Route to show the template with the form to edit a site
-app.get('/sites/:id/edit', catchAsync(async (req, res) => {
-    const site = await Site.findById(req.params.id);
-    res.render('sites/edit', { site });
-}));
-
-// Route to update a site
-app.put('/sites/:id', validateSite, catchAsync(async (req, res) => {
-    const { id } = req.params; 
-    const site = await Site.findByIdAndUpdate(id,{...req.body.site});
-    res.redirect(`/sites/${site._id}`);
-}));
-
-// Route to delete a site
-app.delete('/sites/:id', catchAsync(async (req, res) => {
-    const {id} = req.params;
-    await Site.findByIdAndDelete(id);
-    res.redirect('/sites');
-}));
-
-// Route to create a "review", save it in the DB and associate it with a "site".
-app.post('/sites/:id/reviews', validateReview, catchAsync(async (req, res) => {
-    const site = await Site.findById(req.params.id);
-    const review = new Review(req.body.review);
-    site.reviews.push(review);
-    await review.save();
-    await site.save();
-    res.redirect(`/sites/${site._id}`);
-}));
-
-// Route to delete reviews
-app.delete('/sites/:id/reviews/:reviewId', catchAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-    // Using the pull operator to remove an specific element from the reviews array.
-    await Site.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
-    await Review.findById(req.params.reviewId);
-    res.redirect(`/sites/${id}`);
-}));
 
 // Error handler for all the routes
 app.all('*', (req, res, next) => {
