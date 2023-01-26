@@ -1,12 +1,12 @@
-// 
+// Routes for the sites
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Site = require('../models/site');
-// I have to destructure every variable of validateSquemas in order to use it
-const { validateSite, validateReview } = require('../validateSchemas');
-
+const { validateSite, validateReview } = require('../validateSchemas'); // I have to destructure every variable of validateSquemas in order to use it
+const passport = require('passport');
+const { isLoggedIn } = require('../middleware');
 
 
 // Route to show the template with all the sites
@@ -16,12 +16,12 @@ router.get('/', catchAsync(async (req, res) => {
 }));
 
 // Route to show the template to edit a site
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('sites/new');
 });
 
 // Route to write in the database the information received from the new site form (creating a new site)
-router.post('/', validateSite, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateSite, catchAsync(async (req, res) => {
     const site = new Site(req.body.site);
     await site.save();
     req.flash('success', `${site.name} has been created successfully!`)
@@ -39,7 +39,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 });
 
 // Route to show the template with the form to edit a site
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const site = await Site.findById(req.params.id);
     res.render('sites/edit', { site });
 }),(err,req,res,next)=>{
@@ -48,7 +48,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 });
 
 // Route to update a site
-router.put('/:id', validateSite, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateSite, catchAsync(async (req, res) => {
     const { id } = req.params; 
     const site = await Site.findByIdAndUpdate(id,{...req.body.site});
     req.flash('success', 'Site has been updated successfully!');
@@ -56,7 +56,7 @@ router.put('/:id', validateSite, catchAsync(async (req, res) => {
 }));
 
 // Route to delete a site
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const {id} = req.params;
     await Site.findByIdAndDelete(id);
     req.flash('success', 'Site has been deleted!');

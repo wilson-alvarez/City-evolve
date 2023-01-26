@@ -7,11 +7,15 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 
 // Requiring route files
-const sites = require('./routes/sites');
-const reviews = require('./routes/reviews');
+const siteRoutes = require('./routes/sites');
+const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
 
 //To fix the deprecation warning shown in the console when running the app
 mongoose.set('strictQuery', false);
@@ -59,16 +63,29 @@ app.use(session(sessionConfig));
 
 //Setting up flash
 app.use(flash());
-// Middleware to access "success" or "error" messages stored in flash locally.
+
+//Middlewares for passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate())); //Using the "authenticate" method of "passport-local" for our user model 
+
+
+passport.serializeUser(User.serializeUser()); //Telling passport how do we store a user in the session
+passport.deserializeUser(User.deserializeUser()); //Telling passport how do we get an user out of the session
+
+// "Res" middlewares to access "those variables locally.
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
 
+
 // Adding the routes defined in "sites.js" and "reviews.js", and attaching them to the endpoints "/sites" and "sites/:id/reviewss" respectively.
-app.use('/sites', sites);
-app.use('/sites/:id/reviews', reviews);
+app.use('/sites', siteRoutes);
+app.use('/sites/:id/reviews', reviewRoutes);
+app.use('/', userRoutes);
 
 // Landing page
 app.get('/', (req, res) => {
